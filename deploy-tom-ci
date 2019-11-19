@@ -1,0 +1,32 @@
+pipeline{
+    agent any
+    
+    environment{
+        PATH = "/opt/maven/maven/bin:$PATH"
+    }
+    stages{
+        stage("Git Checkout"){
+            steps{
+                 git 'https://github.com/ammy-git/myweb.git'
+            }
+         }
+        stage("Maven Build"){
+            steps{
+                sh "mvn clean package"
+                sh "mv target/*.war target/myweb.war"
+            }
+         }
+        stage('Deploy-Dev'){
+	  // copy war from here to remote tomcat// ssh agent plugin
+	  // restart tomcat
+	  
+	  sshagent(['tomcat-dev']){
+	    sh "mv target/myweb*.war target/myweb.war"
+		
+		sh "scp -o StrictHostKeyChecking=no target/myweb.war ec2-user@172.31.36.128:/opt/tomcat/apache-tomcat-8.5.47/webapps/"
+		
+		sh "ssh ec2-user@172.31.36.128 /opt/tomcat/apache-tomcat-8.5.47/bin/startup.sh"
+            }
+        }
+    } 
+ 
