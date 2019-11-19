@@ -15,7 +15,6 @@ pipeline{
                 sh "mvn clean package"
                 sh "mv target/*.war target/myweb.war"
             }
-         
          }
         stage('Deploy-Dev'){
 	  // copy war from here to remote tomcat// ssh agent plugin
