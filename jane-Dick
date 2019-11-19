@@ -16,7 +16,7 @@ pipeline{
                 sh "mv target/*.war target/myweb.war"
             }
          
-         }
+         
         stage('Deploy-Dev'){
 	  // copy war from here to remote tomcat// ssh agent plugin
 	  // restart tomcat
@@ -28,8 +28,8 @@ pipeline{
 		
 		sh "ssh ec2-user@172.31.36.128 /opt/tomcat8/bin/startup.sh"
         
+         }
+        
        }
-        
-    }
-        
+    }    
 }
