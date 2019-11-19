@@ -29,5 +29,5 @@ pipeline{
 		sh "ssh ec2-user@172.31.36.128 /opt/tomcat/apache-tomcat-8.5.47/bin/startup.sh"
 		}
             }
-       }
-  }
+}
+}
