@@ -26,5 +26,5 @@ node('master'){
 
     
 	
-	//1] apply chown to root then go to code to varify
+	///1] apply chown to root then go to code to varify
 	//2] go to tomcat browser /ur warfile(exclude .war) eg://http://15.206.75.156:9090/myweb-8.3.0/
