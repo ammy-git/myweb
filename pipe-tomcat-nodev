@@ -1,0 +1,30 @@
+node('master'){
+    stage('SCM Checkout'){
+        git 'https://github.com/ammy-git/myweb.git'
+    }
+    stage('Build Maven'){
+        def mvnHome = tool name: 'Maven', type: 'maven'
+        sh "${mvnHome}/bin/mvn clean install package"
+    }
+    stage('Deploy to Tomcat') {
+        sshagent(['ec2-user-tom']) {
+            sh "ssh -o StrictHostKeyChecking=no  ec2-user@172.31.36.128 sudo chown -R ec2-user:ec2-user /opt/tomcat/" 
+            sh "scp -o StrictHostKeyChecking=no target/myweb-8.3.0.war ec2-user@172.31.36.128:/opt/tomcat/webapps"
+            try{
+                sh "ssh -o StrictHostKeyChecking=no  ec2-user@172.31.36.128 /opt/tomcat/bin/shutdown.sh"    
+            }catch(error){
+                // no error
+            }
+            
+            sh "ssh -o StrictHostKeyChecking=no  ec2-user@172.31.36.128 /opt/tomcat/bin/startup.sh"
+        }
+    }
+	stage('Email Notification'){
+	mail bcc: '', body: 'Done it', cc: '', from: '', replyTo: '', subject: 'tomcat done', to: 'ammydht2@gmail.com'
+    }
+}	
+
+    
+	
+	//1] apply chown to root then go to code to varify
+	//2] go to tomcat browser /ur warfile(exclude .war) eg://http://15.206.75.156:9090/myweb-8.3.0/
